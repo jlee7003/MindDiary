@@ -23,10 +23,8 @@ interface UserData {
     password: string;
 }
 
-
-// register, login, logout, findID, emailVerification, changePassword, changeNickname, findPassword, authPassword, withdrawal
 class UserService {
-    private prisma = new PrismaClient();
+    prisma = new PrismaClient();
 
     async register(userData: UserData) {
         if (isInvalidEmail(userData.email)) {
