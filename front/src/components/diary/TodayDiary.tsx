@@ -1,16 +1,16 @@
 import { useState, ChangeEvent } from "react";
 import Calendar from "react-calendar";
+import useEmotion from "@/hooks/useEmotion";
 import {
     TodaySection,
     CalendarDetail,
     DiaryDetail,
-    Message,
     EditBlock,
 } from "@/styles/diary/todayDiary-style";
 
 const data = {
     nickname: "윤아",
-    emotion: "슬픔",
+    emotion: "자신감",
     body: "오늘 너무 힘들었다. 내일은 안 힘들겠지? 슬프다",
     state: "나만보기",
     date: "Fri Nov 22 2022 00:00:00 GMT+0900",
@@ -20,6 +20,8 @@ export function TodayDiary() {
     const [value, setValue] = useState(new Date());
     const [newText, setNewText] = useState(data.body);
     const [isEdit, setIsEdit] = useState(false);
+    const { emotionState } = useEmotion(data.emotion, data.nickname);
+
     const dateString = value.toLocaleDateString("ko-KR", {
         year: "numeric",
         month: "long",
@@ -29,6 +31,11 @@ export function TodayDiary() {
     const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setNewText(e.target.value);
         if (newText.length > 500) alert("500자");
+    };
+
+    const onDelete = () => {
+        setNewText("");
+        setIsEdit(true);
     };
 
     return (
@@ -41,16 +48,7 @@ export function TodayDiary() {
                 value={value}
             />
             <CalendarDetail>
-                <Message>
-                    <span className="text">
-                        이 날의 감정은 <strong className="emotionText">{data.emotion}</strong>{" "}
-                        입니다. <br />
-                        {data.nickname}님, 너무 속상해 하지 마세요.
-                        <br /> 내일은 분명 좋은 일이 있을 거예요! <br />
-                        웃으면 복이 옵니다 :)
-                    </span>
-                    <span className="emotionIcon">😂</span>
-                </Message>
+                {emotionState()}
                 <DiaryDetail isEdit={isEdit}>
                     <article className="title">
                         <span className="date">{dateString}</span>
@@ -66,7 +64,9 @@ export function TodayDiary() {
                             >
                                 edit
                             </button>
-                            <button className="material-symbols-outlined">delete</button>
+                            <button className="material-symbols-outlined" onClick={onDelete}>
+                                delete
+                            </button>
                         </div>
                         {data.state === "나만보기" ? (
                             <select>
@@ -91,7 +91,11 @@ export function TodayDiary() {
                             />
                             <div>
                                 <span className="countText">{newText.length}/500</span>
-                                <button className="submitButton" onClick={() => setIsEdit(false)}>
+                                <button
+                                    className="submitButton"
+                                    onClick={() => setIsEdit(false)}
+                                    disabled={newText.length === 0}
+                                >
                                     저장
                                 </button>
                             </div>

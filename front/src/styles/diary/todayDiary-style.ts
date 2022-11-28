@@ -103,6 +103,10 @@ export const DiaryDetail = styled.div<{ isEdit: boolean }>`
 
         .icons {
             display: ${({ isEdit }) => (isEdit ? "none" : "block")};
+
+            .material-symbols-outlined:not(:last-child) {
+                margin-right: 1rem;
+            }
         }
 
         select {
@@ -143,6 +147,10 @@ export const EditBlock = styled.div`
 
             background: ${color.lightBlue};
             color: white;
+
+            &:disabled {
+                background: ${color.lightGray};
+            }
         }
     }
 `;
