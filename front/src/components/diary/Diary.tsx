@@ -6,22 +6,22 @@ import { TodayDiary } from "./TodayDiary";
 const tabList = ["하루일기", "전체일기", "대화목록"];
 
 export function Diary() {
-    const [tab, setTab] = useState(0);
+    const [tab, setTab] = useState("하루일기");
 
     return (
         <DiarySection>
             <TabList>
-                {tabList?.map((item, index: number) => (
+                {tabList?.map((tabName) => (
                     <li
-                        key={index}
-                        className={tab === index ? "active" : undefined}
-                        onClick={() => setTab(index)}
+                        key={tabName}
+                        className={tab === tabName ? "active" : undefined}
+                        onClick={() => setTab(tabName)}
                     >
-                        {item}
+                        {tabName}
                     </li>
                 ))}
             </TabList>
-            {tab === 0 && <TodayDiary />}
+            {tab === "하루일기" && <TodayDiary />}
         </DiarySection>
     );
 }
