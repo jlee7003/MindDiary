@@ -1,5 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import Calendar from "react-calendar";
+import * as api from "@/api/diary";
 import useEmotion from "@/hooks/useEmotion";
 import {
     TodaySection,
@@ -33,10 +34,23 @@ export function TodayDiary() {
         if (newText.length > 500) alert("500자");
     };
 
-    const onDelete = () => {
-        setNewText("");
-        setIsEdit(true);
+    const onDelete = async () => {
+        try {
+            // await api.deleteMyDiary(`${id}`);
+            setNewText("");
+            setIsEdit(true);
+        } catch (e) {
+            console.error(e);
+        }
     };
+
+    // const onEdit = async () => {
+    //   try {
+    //     await api.editMyDiary(`${id}`, {newText})
+    //   } catch(e) {
+    //     console.error(e)
+    //   }
+    // }
 
     return (
         <TodaySection>

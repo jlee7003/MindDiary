@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import axios from "axios";
 
 import PostItem from "./PostItem";
+import Loading from "@/components/UI/Loading";
+import * as api from "@/api/diary";
 import usePost from "@/hooks/usePost";
 import { TabList } from "@/styles/common/tab-style";
 
@@ -32,10 +33,17 @@ export default function PostList() {
     const { lastPostRef } = usePost({ isFetchingNextPage, hasNextPage, fetchNextPage });
 
     const getPostPage = async (page = 1) => {
-        const { data } = await axios.get(
-            `https://jsonplaceholder.typicode.com/posts?_page=${page}`
-        );
-        return data;
+        try {
+            if (tab === "전체") {
+                const { data } = await api.getDiary(`?count=10&page=${page}`);
+                return data;
+            } else {
+                const { data } = await api.getDiary(`/emotion=${tab}?count=10&page=${page}`);
+                return data;
+            }
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     const content = data?.pages.map((page: any) => {
@@ -48,7 +56,7 @@ export default function PostList() {
     });
 
     if (status === "error") return <p>Error</p>;
-    if (status === "loading") return <p>Loading</p>;
+    if (status === "loading") return <Loading />;
 
     return (
         <>
