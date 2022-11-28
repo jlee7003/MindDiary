@@ -17,7 +17,7 @@ interface Items {
 }
 
 export default function PostList() {
-    const [tab, setTab] = useState(0);
+    const [tab, setTab] = useState("전체");
 
     const { fetchNextPage, hasNextPage, isFetchingNextPage, data, status } = useInfiniteQuery(
         "posts",
@@ -53,13 +53,13 @@ export default function PostList() {
     return (
         <>
             <TabList>
-                {tabList?.map((item, index: number) => (
+                {tabList?.map((tabName) => (
                     <li
-                        key={index}
-                        className={tab === index ? "active" : undefined}
-                        onClick={() => setTab(index)}
+                        key={tabName}
+                        className={tab === tabName ? "active" : undefined}
+                        onClick={() => setTab(tabName)}
                     >
-                        {item}
+                        {tabName}
                     </li>
                 ))}
             </TabList>
