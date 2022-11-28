@@ -30,11 +30,11 @@ export default function useEmotion(emotion: string, nickname: string) {
                     {emotion === "신남" ? (
                         <img src={happy} alt="happy" className="emotionIcon" />
                     ) : emotion === "자신감" ? (
-                        <img src={confidence} alt="happy" className="emotionIcon" />
+                        <img src={confidence} alt="confidence" className="emotionIcon" />
                     ) : emotion === "만족감" ? (
-                        <img src={satisfaction} alt="happy" className="emotionIcon" />
+                        <img src={satisfaction} alt="satisfaction" className="emotionIcon" />
                     ) : (
-                        <img src={comfort} alt="happy" className="emotionIcon" />
+                        <img src={comfort} alt="comfort" className="emotionIcon" />
                     )}
                 </Message>
             );
@@ -51,13 +51,13 @@ export default function useEmotion(emotion: string, nickname: string) {
                         웃으면 복이 옵니다 :)
                     </span>
                     {emotion === "슬픔" ? (
-                        <img src={sad} alt="happy" className="emotionIcon" />
+                        <img src={sad} alt="sad" className="emotionIcon" />
                     ) : emotion === "불안" ? (
-                        <img src={wound} alt="happy" className="emotionIcon" />
+                        <img src={wound} alt="wound" className="emotionIcon" />
                     ) : emotion === "상처" ? (
-                        <img src={anxiety} alt="happy" className="emotionIcon" />
+                        <img src={anxiety} alt="anxiety" className="emotionIcon" />
                     ) : (
-                        <img src={angry} alt="happy" className="emotionIcon" />
+                        <img src={angry} alt="angry" className="emotionIcon" />
                     )}
                 </Message>
             );

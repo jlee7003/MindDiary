@@ -25,17 +25,21 @@ export const Post = styled.article<{ isOpen: boolean; tag: string }>`
         margin-right: 1.5rem;
 
         background: ${({ tag }) =>
-            tag === "행복"
+            tag === "신남"
                 ? color.yellow
-                : tag === "슬픔"
-                ? color.deepBlue
-                : tag === "분노"
-                ? color.red
-                : tag === "경멸"
+                : tag === "자신감"
+                ? color.pink
+                : tag === "만족감"
                 ? color.orange
-                : tag === "두려움"
+                : tag === "편안함"
+                ? color.skyBlue
+                : tag === "슬픔"
+                ? color.lightBlue
+                : tag === "불안"
+                ? color.green
+                : tag === "상처"
                 ? color.darkBlue
-                : color.pink};
+                : color.red};
 
         color: white;
         line-height: 40px;
