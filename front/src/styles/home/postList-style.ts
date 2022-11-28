@@ -101,7 +101,5 @@ export const PostDetail = styled.article`
         background: ${color.lightBlue};
 
         color: white;
-
-        cursor: pointer;
     }
 `;
