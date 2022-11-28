@@ -1,13 +1,18 @@
+import path from "path";
 type ErrorName =
     | "UnknownError"
     | "InvalidTokenError"
     | "TokenExpiredError"
     | "UserExistError"
     | "InvalidEmailFormatError"
-    | "UserNotFindError"
+    | "NotFindError"
     | "ArgumentError"
     | "WrongPasswordError"
-    | "LoginFailError";
+    | "LoginError"
+    | "LogOutError"
+    | "InvalidAccessError"
+    | "InternalServerError"
+    | "BodyDataError";
 
 interface ErrorInfo {
     statusCode: number;
@@ -35,9 +40,9 @@ const ERROR_MAP: Record<ErrorName, ErrorInfo> = {
         statusCode: 400,
         message: "Invalid email format",
     },
-    UserNotFindError: {
+    NotFindError: {
         statusCode: 400,
-        message: "User can not find",
+        message: "can not find",
     },
     ArgumentError: {
         statusCode: 400,
@@ -47,9 +52,25 @@ const ERROR_MAP: Record<ErrorName, ErrorInfo> = {
         statusCode: 400,
         message: "Login Failed",
     },
-    LoginFailError: {
+    LoginError: {
         statusCode: 400,
         message: "Login failed",
+    },
+    LogOutError: {
+        statusCode: 400,
+        message: "Logout failed",
+    },
+    InvalidAccessError: {
+        statusCode: 400,
+        message: "Login failed",
+    },
+    InternalServerError: {
+        statusCode: 500,
+        message: "Internal Server Error",
+    },
+    BodyDataError: {
+        statusCode: 404,
+        message: "BodyData is wrong",
     },
 };
 
@@ -57,6 +78,7 @@ class AppError extends Error {
     public readonly statusCode: number;
 
     constructor(errorName: ErrorName) {
+        // super(ERROR_MAP[errorName].message);
         super(ERROR_MAP[errorName].message);
 
         this.statusCode = ERROR_MAP[errorName].statusCode;

@@ -1,20 +1,32 @@
+import { useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
 import Header from "./components/UI/Header";
-import User from "./components/user/User";
-import UserLoginForm from "./components/user/UserLoginForm";
-import UserRegisterForm from "./components/user/UserRegisterForm";
-import HomePage from "./pages/HomePage";
-import DiaryPage from "./pages/DiaryPage";
+import Footer from "./components/UI/Footer";
+import useSetUser from "./hooks/useSetUser";
 
 function App() {
+    const { setUser: setUser } = useSetUser();
+
+    const fetchUser = () => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const refreshToken = sessionStorage.getItem("refreshToken");
+
+        if (!accessToken || !refreshToken) {
+            return;
+        }
+
+        setUser();
+    };
+
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
     return (
-        <div className="App">
-            {/* <HomePage /> */}
-            <DiaryPage />
-            {/* <Header />
-            <User />
-            <UserLoginForm />
-            <UserRegisterForm /> */}
-        </div>
+        <Router>
+            <Header />
+            <Footer />
+        </Router>
     );
 }
 
