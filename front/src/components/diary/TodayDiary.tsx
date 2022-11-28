@@ -10,7 +10,7 @@ import {
 
 const data = {
     nickname: "윤아",
-    emotion: "자신감",
+    emotion: "",
     body: "오늘 너무 힘들었다. 내일은 안 힘들겠지? 슬프다",
     state: "나만보기",
     date: "Fri Nov 22 2022 00:00:00 GMT+0900",

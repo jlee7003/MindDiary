@@ -15,35 +15,35 @@ const data = {
 
 const chart = [
     {
-        emotion: "😊",
+        emotion: "자신감",
         A: 120,
     },
     {
-        emotion: "😂",
+        emotion: "만족감",
         A: 98,
     },
     {
-        emotion: "😙",
+        emotion: "신남",
         A: 86,
     },
     {
-        emotion: "😓",
+        emotion: "편안함",
         A: 99,
     },
     {
-        emotion: "😀",
+        emotion: "불안",
         A: 85,
     },
     {
-        emotion: "😁",
+        emotion: "슬픔",
         A: 65,
     },
     {
-        emotion: "🥱",
+        emotion: "상처",
         A: 65,
     },
     {
-        emotion: "😟",
+        emotion: "분노",
         A: 65,
     },
 ];
@@ -63,7 +63,8 @@ export function Emotion() {
                 <span>
                     지난 한 달 간의 감정들 입니다.
                     <br />
-                    가장 많이 자치한 감정은 <strong>행복</strong>이군요! <br />
+                    가장 많이 자치한 감정은 <strong>자신감</strong>
+                    이군요! <br />
                     자신의 감정을 돌아보는 건 <br />
                     정서적 건강을 관리하는 데 도움이 됩니다. <br />
                     꾸준히 기록하며 마음을 되돌아 보세요!
