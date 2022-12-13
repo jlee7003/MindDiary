@@ -1,13 +1,11 @@
 import classNames from "classnames";
 import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { socket } from "@/components/chat/Chat";
 import { currentUser } from "@/temp/userAtom";
 import * as api from "@/api/chat";
 import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { useLocation } from "react-router-dom";
-import { currentroom } from "@/temp/ChatRecoil";
 import {
     ChatContainer,
     LeaveButton,
@@ -25,19 +23,12 @@ interface ChatData {
 export const ChatRoom = (joinedRoom: any | undefined) => {
     const [chats, setChats] = useState<ChatData[]>([]);
     const [msgText, setMsgText] = useState<string>("");
-    // const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
     const chatContainerEl = useRef<HTMLDivElement>(null);
-    // const chatRoom = currentsroom;
-    let { room } = useParams();
     const chatRoom = joinedRoom?.joinedRoom;
-    console.log(joinedRoom);
     const [recentlyMessage, setRecentlyMessage] = useRecoilState(recentlyMsgState);
     const user = useRecoilValue(currentUser);
-    // const chatRoom = currentsroom;
     const userid = String(user?.id);
     const navigate = useNavigate();
-    console.log(chatRoom, joinedRoom?.joinedRoom);
-    //todo : usecallback 사용하기
 
     // 채팅이 길어지면(chats.length) 스크롤이 생성되므로, 스크롤의 위치를 최근 메시지에 위치시키기 위함
     useEffect(() => {
@@ -49,7 +40,6 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
         if (scrollHeight > clientHeight) {
             chatContainer.scrollTop = scrollHeight - clientHeight;
         }
-        console.log(chats, chatRoom);
     }, [chats.length]);
 
     // message event listener
@@ -58,7 +48,6 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
             if (chat === null) {
                 return null;
             }
-            console.log("실행", chat, chatRoom);
             if (chat.chatRoom == chatRoom && chatRoom != null) {
                 setChats((prevChats) => [...prevChats, chat]);
                 setRecentlyMessage(chat);
@@ -77,13 +66,7 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     }, []);
 
     useEffect(() => {
-        console.log(chatRoom, 5443454);
         getMessegetext(chatRoom);
-        // console.log("the rooms change", chatRoom);
-        if (chatRoom !== undefined) {
-            // setCurrentsroom(chatRoom);
-            console.log(chatRoom, 54434);
-        }
         setMsgText("");
     }, [joinedRoom?.joinedRoom]);
 
@@ -98,16 +81,6 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
         }
     };
 
-    // const getRecentlyMessege = async (chatRoom: string | undefined) => {
-    //     try {
-    //         const { data } = await api.getMessege(chatRoom);
-    //         setChats(data.result);
-    //         return data;
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
-
     const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setMsgText(e.target.value);
     }, []);
@@ -117,7 +90,6 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
             e.preventDefault();
             if (!msgText) return alert("메시지를 입력해 주세요.");
             if (chatRoom != null) {
-                console.log(chatRoom, "is not null");
                 socket.emit("message", { chatRoom, msgText, userid }, (chat: ChatData) => {
                     setChats((prevChats) => [...prevChats, chat]);
                 });
@@ -134,7 +106,7 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     }, [navigate, chatRoom]);
 
     return (
-        <div onClick={() => joinedRoom.focusEvent()}>
+        <div onClick={() => joinedRoom.focusEvent(joinedRoom.joinedRoom)}>
             <LeaveButton onClick={onLeaveRoom}>
                 <button>방 나가기{chatRoom}</button>
             </LeaveButton>

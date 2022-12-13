@@ -49,7 +49,6 @@ export const sc = new socket.Server(server, {
 });
 
 let createdRooms: string[] = [];
-let strArr: string[] = [];
 
 if (sc !== undefined) {
     sc.on("connection", (socket: Socket) => {
@@ -62,17 +61,6 @@ if (sc !== undefined) {
         socket.on("room-list", async (usermodel: string) => {
             //socket emit 으로 받아온 userid로 방을 검색
             const result = await chatService.roomList(Number(usermodel));
-            for (let value in Object.values(result.result)) {
-                strArr.push(...Object.values(result.result[value]));
-            }
-
-            const uniqueArr = strArr.filter((element, index) => {
-                return strArr.indexOf(element) === index;
-            });
-
-            for (let room in uniqueArr) {
-                sc.emit("delete-room", uniqueArr[room]);
-            }
 
             sc.emit("create-room", result, usermodel); // 대기실 방 생성
             return createdRooms;
