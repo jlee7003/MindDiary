@@ -33,7 +33,7 @@ class ChatService {
                         user_model_id: inviter + "," + invitee,
                         inviter: inviter,
                         invitee: invitee,
-                        lastmessage: "",
+                        lastmessage: "메세지를 입력해보세요",
                     },
                 });
             } catch (e: any) {
@@ -107,15 +107,6 @@ class ChatService {
             return x != userid;
         });
 
-        const result = await this.prisma.chat.update({
-            where: {
-                user_model_id: chatRoom,
-            },
-            data: {
-                lastmessage: message,
-            },
-        });
-
         try {
             await this.prisma.messege.create({
                 data: {
@@ -131,6 +122,15 @@ class ChatService {
                 throw new AppError("ArgumentError");
             }
         }
+        const result = await this.prisma.chat.update({
+            where: {
+                user_model_id: chatRoom,
+            },
+            data: {
+                lastmessage: message,
+            },
+        });
+
         await this.prisma.$disconnect();
         return { result: result };
     }

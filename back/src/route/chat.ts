@@ -25,6 +25,7 @@ chatRouter.get(
         if (roomname === undefined || userid === undefined) {
             throw new AppError("ArgumentError");
         }
+        console.log("몇번이나 실행 될까");
         const result = await chatService.countMessegeNotRead(String(roomname), String(userid));
         return { statusCode: 200, content: result };
     })

@@ -8,7 +8,6 @@ import { Head, ChatRoomstyle } from "@/styles/chat/waiting-room.styles";
 import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
 import ChatRoom from "@/components/chat/chatroom";
-import WaitingRoom from "@/components/chat/waiting-room";
 export const socket = io("http://localhost:4000");
 import { currentroom, chatListState } from "@/temp/ChatRecoil";
 //채팅 상자
@@ -30,17 +29,12 @@ interface ChatList {
 }
 
 export function Chat() {
-    const [chats, setChats] = useState<ChatData[]>([]);
     const [joinedRoom, setJoinedRoom] = useState<string>();
-    const [count, setCount] = useState<string>();
     const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
     const chatContainerEl = useRef<HTMLDivElement>(null);
     let { roomName } = useParams<"roomName">();
-    const chatRoom = roomName;
-    let { room } = useParams();
     // const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
     const user = useRecoilValue(currentUser);
-    const current_room = useRecoilValue(currentroom);
     const userid = String(user?.id);
     const [recentMessage, setRecentMessage] = useRecoilState(recentlyMsgState);
     // const [chatList, setChatList] = useRecoilState(chatListState);
@@ -60,9 +54,6 @@ export function Chat() {
         const leaveRoomHandler = (roomName: string) => {
             setCurrentsroom(roomName);
         };
-        const roomListHandler = (rooms: string[]) => {
-            // getMessegetext(rooms[0], userid);
-        };
 
         const createRoomHandler = (response: any, usermodel: string) => {
             if (userid == usermodel) {
@@ -81,12 +72,12 @@ export function Chat() {
                 msgText: chat.msgText,
                 chatRoom: chat.chatRoom,
             });
-            if (chatList !== null) {
-                chatList.map(async (item: ChatList, index: number) => {
-                    const countresult = await api.getCountMessege(item.user_model_id, userid);
-                    chatList[index]["count"] = countresult.data.result;
-                });
-            }
+            // if (chatList !== null) {
+            //     chatList.map(async (item: ChatList, index: number) => {
+            //         const countresult = await api.getCountMessege(item.user_model_id, userid);
+            //         chatList[index]["count"] = countresult.data.result;
+            //     });
+            // }
 
             setChatList((prev) => {
                 return prev!.map((item) => {
@@ -176,7 +167,6 @@ export function Chat() {
         if (chatList === null) {
             return null;
         }
-        console.log(chatList);
         return (
             <>
                 {chatList.map((item, idx) => (
