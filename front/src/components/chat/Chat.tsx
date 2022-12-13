@@ -44,7 +44,7 @@ export function Chat() {
     const userid = String(user?.id);
     const [recentMessage, setRecentMessage] = useRecoilState(recentlyMsgState);
     // const [chatList, setChatList] = useRecoilState(chatListState);
-
+    let vvcount = 0;
     const navigate = useNavigate();
     const [chatList, setChatList] = useState<
         | {
@@ -67,16 +67,11 @@ export function Chat() {
         };
 
         const createRoomHandler = (response: any, usermodel: string) => {
-            response.result.map(async (item: any, index: number) => {
-                const countresult = await api.getCountMessege(item.user_model_id, userid);
-                response.result[index]["count"] = countresult.data.result;
-                // setCount(countresult.data.result);
-            });
-            console.log("createRoom response:", response.result);
             if (userid == usermodel) {
                 response.result.map(async (item: ChatList, index: number) => {
                     const countresult = await api.getCountMessege(item.user_model_id, userid);
                     response.result[index]["count"] = countresult.data.result;
+                    console.log(vvcount++);
                 });
                 setChatList(response.result);
             }
@@ -90,7 +85,7 @@ export function Chat() {
                 msgText: chat.msgText,
                 chatRoom: chat.chatRoom,
             });
-            console.log("chatlist 갱신");
+            console.log("chatlist 갱신", chat);
             if (chatList !== null) {
                 chatList.map(async (item: ChatList, index: number) => {
                     const countresult = await api.getCountMessege(item.user_model_id, userid);
@@ -127,50 +122,60 @@ export function Chat() {
         };
     }, []);
 
-    useEffect(() => {
-        // socket handler
+    // useEffect(() => {
+    // socket handler
 
-        const messageHandler = (chat: ChatData) => {
-            // console.log("chat", chat, chatList, 42342342343);
-            console.log("working");
-            setRecentMessage({
-                sender: chat.sender,
-                msgText: chat.msgText,
-                chatRoom: chat.chatRoom,
-            });
-            console.log("chatlist 갱신");
-            // if (chatList !== null) {
-            //     console.log("count");
-            //     chatList.map(async (item: ChatList, index: number) => {
-            //         const countresult = await api.getCountMessege(item.user_model_id, userid);
-            //         chatList[index]["count"] = countresult.data.result;
-            //     });
-            // }
+    //     const messageHandler = (chat: ChatData) => {
+    //         // console.log("chat", chat, chatList, 42342342343);
+    //         console.log("working");
+    //         setRecentMessage({
+    //             sender: chat.sender,
+    //             msgText: chat.msgText,
+    //             chatRoom: chat.chatRoom,
+    //         });
+    //         console.log("chatlist 갱신", chat);
+    //         // if (chatList !== null) {
+    //         //     console.log("count");
+    //         //     chatList.map(async (item: ChatList, index: number) => {
+    //         //         const countresult = await api.getCountMessege(item.user_model_id, userid);
+    //         //         chatList[index]["count"] = countresult.data.result;
+    //         //     });
+    //         // }
 
-            setChatList((prev) => {
-                console.log(prev, "ㄷㄱㅎㄱ");
-                return prev!.map((item) => {
-                    if (item.user_model_id == chat.chatRoom) {
-                        console.log("update");
-                        item.lastmessage = chat.msgText;
-                        item.updatedAt = "방금 전";
-                        if (chat.sender == userid) {
-                            item.count = "0";
-                        } else {
-                            item.count = String(Number(item.count) + 0.5);
-                        }
-                    }
-                    console.log(prev, "변경 후");
-                    return item;
-                });
+    //         setChatList((prev) => {
+    //             console.log(prev, "ㄷㄱㅎㄱ");
+    //             return prev!.map((item) => {
+    //                 if (item.user_model_id == chat.chatRoom) {
+    //                     console.log("update", item.count);
+
+    //                     item.lastmessage = chat.msgText;
+    //                     item.updatedAt = "방금 전";
+    //                     if (chat.sender == userid) {
+    //                         item.count = "0";
+    //                     } else {
+    //                         item.count = String(Number(item.count) + 0.5);
+    //                     }
+    //                 }
+    //                 console.log(prev, "변경 후");
+    //                 return item;
+    //             });
+    //         });
+    //         // }
+    //     };
+    //     socket.on("message", messageHandler);
+    //     return () => {
+    //         socket.off("message", messageHandler);
+    //     };
+    // }, [chatList]);
+
+    const setCountZero = () => {
+        setChatList((prev) => {
+            return prev!.map((item) => {
+                item.count = "0";
+                return item;
             });
-            // }
-        };
-        socket.on("message", messageHandler);
-        return () => {
-            socket.off("message", messageHandler);
-        };
-    }, [chatList]);
+        });
+    };
 
     const onJoinRoom = useCallback(
         (roomName: string) => async () => {
@@ -178,6 +183,7 @@ export function Chat() {
             socket.emit("join-room", roomName, user?.id, () => {});
             socket.emit("leave-room", roomName, () => {});
             // navigate(`/diary/room/${roomName}`);
+            setCountZero();
             await api.readMessege(roomName, userid);
 
             console.log(roomName, 24242);
@@ -241,7 +247,11 @@ export function Chat() {
                         // <Routes>
                         //     <Route path="/room/:roomName" element={<ChatRoom />} />
                         // </Routes>
-                        <ChatRoom joinedRoom={joinedRoom} setJoinedRoom={setJoinedRoom} />
+                        <ChatRoom
+                            joinedRoom={joinedRoom}
+                            setJoinedRoom={setJoinedRoom}
+                            focusEvent={() => setCountZero()}
+                        />
                     )}
                 </Container>
             </FlexBox>

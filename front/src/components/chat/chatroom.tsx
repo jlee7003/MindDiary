@@ -22,7 +22,7 @@ interface ChatData {
     chatRoom: string;
 }
 
-export const ChatRoom = (joinedRoom: any | undefined, setJoinedRoom: any) => {
+export const ChatRoom = (joinedRoom: any | undefined) => {
     const [chats, setChats] = useState<ChatData[]>([]);
     const [msgText, setMsgText] = useState<string>("");
     // const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
@@ -30,6 +30,7 @@ export const ChatRoom = (joinedRoom: any | undefined, setJoinedRoom: any) => {
     // const chatRoom = currentsroom;
     let { room } = useParams();
     const chatRoom = joinedRoom?.joinedRoom;
+    console.log(joinedRoom);
     const [recentlyMessage, setRecentlyMessage] = useRecoilState(recentlyMsgState);
     const user = useRecoilValue(currentUser);
     // const chatRoom = currentsroom;
@@ -129,14 +130,15 @@ export const ChatRoom = (joinedRoom: any | undefined, setJoinedRoom: any) => {
     const onLeaveRoom = useCallback(() => {
         socket.emit("leave-room", chatRoom, () => {});
         navigate("/");
+        joinedRoom.setJoinedRoom();
     }, [navigate, chatRoom]);
 
     return (
-        <>
+        <div onClick={() => joinedRoom.focusEvent()}>
             <LeaveButton onClick={onLeaveRoom}>
                 <button>방 나가기{chatRoom}</button>
             </LeaveButton>
-            <ChatContainer ref={chatContainerEl}>
+            <ChatContainer ref={chatContainerEl} onFocus={() => joinedRoom.focusEvent()}>
                 {chats.map((chat, index) =>
                     chat.chatRoom == chatRoom ? (
                         <MessageBox
@@ -160,7 +162,7 @@ export const ChatRoom = (joinedRoom: any | undefined, setJoinedRoom: any) => {
                     <button className="submitButton">전송</button>
                 </div>
             </MessageForm>
-        </>
+        </div>
     );
 };
 export default ChatRoom;

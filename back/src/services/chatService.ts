@@ -166,10 +166,16 @@ class ChatService {
     }
 
     async countMessegeNotRead(roomName: string, userid: string) {
+        const members = roomName.split(",");
+        let receiveris = members.filter((x) => {
+            return x != userid;
+        });
         let result = await this.prisma.messege.count({
             where: {
                 chatRoom: roomName,
                 read: false,
+                // receiver: receiveris.join(),
+                receiver: userid,
             },
         });
         console.log("방:", roomName, "  ", userid, "번이 안읽은 메세지 갯수는", result, "입니다");
