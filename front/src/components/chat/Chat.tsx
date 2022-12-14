@@ -9,7 +9,7 @@ import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
 import ChatRoom from "@/components/chat/chatroom";
 import WaitingRoom from "@/components/chat/waiting-room";
-export const socket = io("http://localhost:4000");
+export const socket = io("http://localhost:3002");
 import { currentroom, chatListState } from "@/temp/ChatRecoil";
 //채팅 상자
 interface ChatData {
