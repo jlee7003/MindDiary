@@ -29,7 +29,7 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     const user = useRecoilValue(currentUser);
     const userid = String(user?.id);
     const navigate = useNavigate();
-
+    console.log(joinedRoom);
     // 채팅이 길어지면(chats.length) 스크롤이 생성되므로, 스크롤의 위치를 최근 메시지에 위치시키기 위함
     useEffect(() => {
         if (!chatContainerEl.current) return;
@@ -45,10 +45,12 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     // message event listener
     useEffect(() => {
         const messageHandler = (chat: ChatData) => {
+            console.log(chatContainerEl);
             if (chat === null) {
                 return null;
             }
-            if (chat.chatRoom == chatRoom && chatRoom != null) {
+            console.log(chat.chatRoom, "joinroom:", joinedRoom?.joinedRoom);
+            if (chat.chatRoom == joinedRoom?.joinedRoom && joinedRoom?.joinedRoom != null) {
                 setChats((prevChats) => [...prevChats, chat]);
                 setRecentlyMessage(chat);
             }
