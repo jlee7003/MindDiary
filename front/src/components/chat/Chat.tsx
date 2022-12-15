@@ -60,6 +60,7 @@ export function Chat() {
 
         const createRoomHandler = async (response: any, usermodel: string) => {
             //로그인한 사용자의 읽지 않은 메세지를 구해 채팅방 목록에 count 추가
+            console.log(userid, usermodel);
             if (userid == usermodel) {
                 const a = await Promise.all(
                     response.result.map(async (item: ChatList, index: number) => {
@@ -113,25 +114,28 @@ export function Chat() {
     //채팅방값 감시
     useEffect(() => {
         const messageHandler = (chat: ChatData) => {
+            console.log("message", chat);
             setRecentMessage({
                 sender: chat.sender,
                 msgText: chat.msgText,
                 chatRoom: chat.chatRoom,
             });
 
-            setChatList((prev) => {
-                return prev!.map((item) => {
-                    if (item.user_model_id == chat.chatRoom) {
-                        item.lastmessage = chat.msgText;
-                        item.updatedAt = "방금 전";
-                        if (chat.sender == userid) {
-                            item.count = "0";
-                        } else {
-                            item.count = String(Number(item.count) + 1);
+            setChatList((prev: any) => {
+                if (prev != null) {
+                    return prev!.map((item: any) => {
+                        if (item.user_model_id == chat.chatRoom) {
+                            item.lastmessage = chat.msgText;
+                            item.updatedAt = "방금 전";
+                            if (chat.sender == userid) {
+                                item.count = "0";
+                            } else {
+                                item.count = String(Number(item.count) + 1);
+                            }
                         }
-                    }
-                    return item;
-                });
+                        return item;
+                    });
+                }
             });
         };
         socket.on("message", messageHandler);
@@ -149,6 +153,7 @@ export function Chat() {
             });
         });
     };
+
     const onJoinRoom = useCallback(
         (roomName: string) => async () => {
             socket.emit("join-room", roomName, user?.id, () => {});
@@ -160,8 +165,9 @@ export function Chat() {
             setJoinedRoom(roomName);
             return () => {};
         },
-        [navigate]
+        [navigate, roomName]
     );
+
     const ChatRoomComponents = useMemo(() => {
         if (chatList === null) {
             return null;

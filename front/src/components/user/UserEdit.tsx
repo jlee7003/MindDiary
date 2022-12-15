@@ -35,6 +35,10 @@ export default function UserEdit({ setShowInfo, setShowDropDown }: Props) {
 
     const { logout } = useLogout();
 
+    if (user == null) {
+        return;
+    }
+
     const { mutate: requestEditNickname } = useRequestEditNickname(
         {
             nickname: form.nickname,
@@ -42,7 +46,7 @@ export default function UserEdit({ setShowInfo, setShowDropDown }: Props) {
         {
             onSuccess: () => {
                 console.log("닉네임 변경 성공");
-                setUser({ nickname: form.nickname });
+                setUser({ nickname: form.nickname, id: user.id });
             },
 
             onError: (error: Error) => {

@@ -1,11 +1,13 @@
 import classNames from "classnames";
 import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { socket } from "@/components/chat/Chat";
 import { currentUser } from "@/temp/userAtom";
 import * as api from "@/api/chat";
 import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
+import { useLocation } from "react-router-dom";
+import { currentroom } from "@/temp/ChatRecoil";
 import {
     ChatContainer,
     LeaveButton,
@@ -20,16 +22,16 @@ interface ChatData {
     chatRoom: string;
 }
 
-export const ChatRoom = (joinedRoom: any | undefined) => {
+export const ChatRoom = (props: any | undefined) => {
     const [chats, setChats] = useState<ChatData[]>([]);
     const [msgText, setMsgText] = useState<string>("");
     const chatContainerEl = useRef<HTMLDivElement>(null);
-    const chatRoom = joinedRoom?.joinedRoom;
+    const chatRoom = props?.joinedRoom;
     const [recentlyMessage, setRecentlyMessage] = useRecoilState(recentlyMsgState);
     const user = useRecoilValue(currentUser);
     const userid = String(user?.id);
     const navigate = useNavigate();
-    console.log(joinedRoom);
+    //todo : usecallback 사용하기
     // 채팅이 길어지면(chats.length) 스크롤이 생성되므로, 스크롤의 위치를 최근 메시지에 위치시키기 위함
     useEffect(() => {
         if (!chatContainerEl.current) return;
@@ -45,32 +47,26 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     // message event listener
     useEffect(() => {
         const messageHandler = (chat: ChatData) => {
-            console.log(chatContainerEl);
             if (chat === null) {
                 return null;
             }
-            console.log(chat.chatRoom, "joinroom:", joinedRoom?.joinedRoom);
-            if (chat.chatRoom == joinedRoom?.joinedRoom && joinedRoom?.joinedRoom != null) {
+            console.log(chat.chatRoom, chatRoom);
+            if (chat.chatRoom == chatRoom && chatRoom != null) {
                 setChats((prevChats) => [...prevChats, chat]);
                 setRecentlyMessage(chat);
             }
         };
-        const leaveRoomHandler = (chatRoom: string) => {
-            // setCurrentsroom(chatRoom);
-        };
 
         socket.on("message", messageHandler);
-        socket.on("leave-room", leaveRoomHandler);
         return () => {
             socket.off("message", messageHandler);
-            socket.off("leave-room", leaveRoomHandler);
         };
-    }, []);
-
+    }, [chatRoom]);
+    //유저가 입장하는 방에 따라 메세지 값을 불러오고 채팅 Input 값 비우기
     useEffect(() => {
         getMessegetext(chatRoom);
         setMsgText("");
-    }, [joinedRoom?.joinedRoom]);
+    }, [props?.joinedRoom]);
 
     //전체 메세지 받아오기
     const getMessegetext = async (chatRoom: string | undefined) => {
@@ -90,7 +86,6 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     const onSendMessage = useCallback(
         (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            console.log(5656);
             if (!msgText) return alert("메시지를 입력해 주세요.");
             if (chatRoom != null) {
                 socket.emit("message", { chatRoom, msgText, userid }, (chat: ChatData) => {
@@ -104,16 +99,16 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
 
     const onLeaveRoom = useCallback(() => {
         socket.emit("leave-room", chatRoom, () => {});
-        navigate("/");
-        joinedRoom.setJoinedRoom();
+        navigate("/diary");
+        props.setJoinedRoom();
     }, [navigate, chatRoom]);
 
     return (
-        <div onClick={() => joinedRoom.focusEvent(joinedRoom.joinedRoom)}>
+        <div onFocus={() => props.focusEvent()}>
             <LeaveButton onClick={onLeaveRoom}>
-                <button>방 나가기{chatRoom}</button>
+                <button>방 나가기</button>
             </LeaveButton>
-            <ChatContainer ref={chatContainerEl} onFocus={() => joinedRoom.focusEvent()}>
+            <ChatContainer ref={chatContainerEl}>
                 {chats.map((chat, index) =>
                     chat.chatRoom == chatRoom ? (
                         <MessageBox

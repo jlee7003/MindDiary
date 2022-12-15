@@ -89,6 +89,7 @@ if (sc !== undefined) {
             createdRooms.push(user_model_id); // 유저가 생성한 room 목록에 추가
             sc.emit("create-room", user_model_id); // 대기실 방 생성
             sc.emit("message", { sender: inviter, msgText: message, chatRoom: user_model_id }); // 방을 만들고 메세지 보내기
+            await chatService.saveMessege(user_model_id, message, String(inviter));
             socket.join("");
             return { success: true, payload: user_model_id };
         });
