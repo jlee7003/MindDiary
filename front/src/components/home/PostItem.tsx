@@ -36,8 +36,11 @@ function PostItem({ post }: Props, ref: ForwardedRef<HTMLElement>) {
         const messege = messegeRef.current?.value;
         let inviter = String(user?.id);
         let invitee = String(user_model_id);
-
+        const roomName = inviter + "," + invitee;
         if (user_model_id === Number(user?.id)) {
+            navigate("/diary", {
+                state: { room: roomName },
+            });
             return;
         }
 
@@ -48,7 +51,9 @@ function PostItem({ post }: Props, ref: ForwardedRef<HTMLElement>) {
             }
         });
 
-        navigate(`/diary`);
+        navigate("/diary", {
+            state: { room: roomName },
+        });
     }, [navigate]);
 
     const onClick = () => {
