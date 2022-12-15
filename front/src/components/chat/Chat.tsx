@@ -78,20 +78,21 @@ export function Chat() {
                 });
             }
 
-            setChatList((prev) => {
-                return prev!.map((item) => {
-                    if (item.user_model_id == chat.chatRoom) {
-                        item.lastmessage = chat.msgText;
-                        item.updatedAt = "방금 전";
-                        if (chat.sender == userid) {
-                            item.count = "0";
+            setChatList((prev: any) => {
+                if (prev != null) {
+                    return prev!.map((item: any) => {
+                        if (item.user_model_id == chat.chatRoom) {
+                            item.lastmessage = chat.msgText;
+                            item.updatedAt = "방금 전";
+                            if (chat.sender == userid) {
+                                item.count = "0";
+                            }
+                            item.count = item.count;
                         }
-                        item.count = item.count;
-                    }
-                    return item;
-                });
+                        return item;
+                    });
+                }
             });
-            // }
         };
 
         socket.emit("room-list", String(user?.id), () => {}, []);
@@ -110,6 +111,7 @@ export function Chat() {
         // 챗방 목록이 바뀔떄 랜더링
 
         const messageHandler = (chat: ChatData) => {
+            console.log(45333333);
             setRecentMessage({
                 sender: chat.sender,
                 msgText: chat.msgText,

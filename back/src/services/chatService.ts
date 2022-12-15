@@ -17,20 +17,27 @@ class ChatService {
     };
 
     async saveChat(inviter: string, invitee: string) {
+        let roomName;
+        if (Number(inviter) > Number(invitee)) {
+            roomName = inviter + "," + invitee;
+        } else {
+            roomName = invitee + "," + inviter;
+        }
+
         const result = await this.prisma.chat.findUnique({
             where: {
-                user_model_id: inviter + "," + invitee,
+                user_model_id: roomName,
             },
         });
         if (result !== null) {
             //이미 방이 있으므로 아무 것도 하지 않음
-            console.log("이미 존재합니다");
+            console.log("이미 존재하는 방임");
             return;
         } else {
             try {
                 await this.prisma.chat.create({
                     data: {
-                        user_model_id: inviter + "," + invitee,
+                        user_model_id: roomName,
                         inviter: inviter,
                         invitee: invitee,
                         lastmessage: "",
@@ -63,7 +70,6 @@ class ChatService {
                 user_model_id: true,
                 lastmessage: true,
                 updatedAt: true,
-                //count: 안읽은 메세지 추가 해야함
             },
         });
 
@@ -166,15 +172,10 @@ class ChatService {
     }
 
     async countMessegeNotRead(roomName: string, userid: string) {
-        const members = roomName.split(",");
-        let receiveris = members.filter((x) => {
-            return x != userid;
-        });
         let result = await this.prisma.messege.count({
             where: {
                 chatRoom: roomName,
                 read: false,
-                // receiver: receiveris.join(),
                 receiver: userid,
             },
         });
@@ -186,7 +187,7 @@ class ChatService {
         const result = await this.prisma.messege.updateMany({
             where: {
                 chatRoom: roomName,
-                sender: userid,
+                receiver: userid,
                 read: false,
             },
             data: {
