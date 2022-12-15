@@ -4,7 +4,8 @@
         "build": "tsc",
         "studio": "npx prisma studio",
         "generate": "npx prisma generate",
-        "push": "npx prisma db push"
+        "push": "npx prisma db push",
+        "start": "node build/server.js"
     },
     "nodemonConfig": {
         "watch": [

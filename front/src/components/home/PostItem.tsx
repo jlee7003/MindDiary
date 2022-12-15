@@ -1,11 +1,6 @@
-import { useState, forwardRef, useMemo, ForwardedRef, useCallback, useRef } from "react";
+import { useState, forwardRef, useMemo, ForwardedRef } from "react";
 import { dateTime } from "@/util/time";
 import { CardSection, Post, PostDetail, MessageBlock } from "@/styles/home/postList-style";
-import { socket } from "@/components/chat/Chat";
-import { currentUser } from "@/temp/userAtom";
-
-import { useRecoilValue } from "recoil";
-import { useNavigate } from "react-router-dom";
 
 interface Items {
     id: number;
@@ -13,16 +8,10 @@ interface Items {
     description: string;
     emotion: string;
     createdAt: Date;
-    user_model_id: number;
 }
 
 interface Props {
     post: Items;
-}
-
-interface CreateRoomResponse {
-    success: boolean;
-    payload: string;
 }
 
 function PostItem({ post }: Props, ref: ForwardedRef<HTMLElement>) {
@@ -53,11 +42,8 @@ function PostItem({ post }: Props, ref: ForwardedRef<HTMLElement>) {
                                     type="text"
                                     placeholder="메시지는 익명으로 전송됩니다. 속마음을 나눠보세요!"
                                     autoFocus
-                                    ref={messegeRef}
                                 />
-                                <button onClick={onCreateRoom} className="submitButton">
-                                    전송
-                                </button>
+                                <button className="submitButton">전송</button>
                             </MessageBlock>
                         </div>
                     </PostDetail>
