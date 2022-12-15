@@ -8,7 +8,6 @@ import { Head, ChatRoomstyle } from "@/styles/chat/waiting-room.styles";
 import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
 import ChatRoom from "@/components/chat/chatroom";
-import WaitingRoom from "@/components/chat/waiting-room";
 export const socket = io("http://localhost:3002");
 import { currentroom, chatListState } from "@/temp/ChatRecoil";
 //채팅 상자
@@ -30,20 +29,11 @@ interface ChatList {
 }
 
 export function Chat() {
-    const [chats, setChats] = useState<ChatData[]>([]);
     const [joinedRoom, setJoinedRoom] = useState<string>();
-    const [count, setCount] = useState<string>();
     const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
-    const chatContainerEl = useRef<HTMLDivElement>(null);
-    let { roomName } = useParams<"roomName">();
-    const chatRoom = roomName;
-    let { room } = useParams();
-    // const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
     const user = useRecoilValue(currentUser);
-    const current_room = useRecoilValue(currentroom);
     const userid = String(user?.id);
     const [recentMessage, setRecentMessage] = useRecoilState(recentlyMsgState);
-    // const [chatList, setChatList] = useRecoilState(chatListState);
     const navigate = useNavigate();
     const [chatList, setChatList] = useState<
         | {
