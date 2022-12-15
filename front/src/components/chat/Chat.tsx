@@ -1,15 +1,18 @@
 import { Container, FlexBox } from "@/styles/chat/chat-style";
 import { io } from "socket.io-client";
-import { Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { currentUser } from "@/temp/userAtom";
 import * as api from "@/api/chat";
 import { Head, ChatRoomstyle } from "@/styles/chat/waiting-room.styles";
 import { recentlyMsgState } from "@/temp/ChatRecoil";
 import { useRecoilValue, useRecoilState } from "recoil";
 import ChatRoom from "@/components/chat/chatroom";
-export const socket = io("http://localhost:3002");
-import { currentroom, chatListState } from "@/temp/ChatRecoil";
+// export const socket = io("http://localhost:3002");
+import { currentroom } from "@/temp/ChatRecoil";
+
+export const socket = io("http://kdt-ai5-team02.elicecoding.com");
+
 //채팅 상자
 interface ChatData {
     sender: string;
@@ -31,9 +34,13 @@ interface ChatList {
 export function Chat() {
     const [joinedRoom, setJoinedRoom] = useState<string>();
     const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
+    let { roomName } = useParams<"roomName">();
+    // const [currentsroom, setCurrentsroom] = useRecoilState(currentroom);
     const user = useRecoilValue(currentUser);
     const userid = String(user?.id);
     const [recentMessage, setRecentMessage] = useRecoilState(recentlyMsgState);
+    // const [chatList, setChatList] = useRecoilState(chatListState);
+
     const navigate = useNavigate();
     const [chatList, setChatList] = useState<
         | {
@@ -45,96 +52,84 @@ export function Chat() {
         | null
     >(null);
     useEffect(() => {
-        //첫 화면 렌더링
+        //메세지 헨들러가 2개?
 
         const leaveRoomHandler = (roomName: string) => {
             setCurrentsroom(roomName);
         };
-        const roomListHandler = (rooms: string[]) => {
-            // getMessegetext(rooms[0], userid);
-        };
 
-        const createRoomHandler = (response: any, usermodel: string) => {
+        const createRoomHandler = async (response: any, usermodel: string) => {
+            //로그인한 사용자의 읽지 않은 메세지를 구해 채팅방 목록에 count 추가
             if (userid == usermodel) {
-                response.result.map(async (item: ChatList, index: number) => {
-                    const countresult = await api.getCountMessege(item.user_model_id, userid);
-                    response.result[index]["count"] = countresult.data.result;
-                });
+                const a = await Promise.all(
+                    response.result.map(async (item: ChatList, index: number) => {
+                        const countresult = await api.getCountMessege(item.user_model_id, userid);
+                        response.result[index]["count"] = countresult.data.result;
+                    })
+                );
                 setChatList(response.result);
-                console.log(response.result);
             }
         };
 
-        const messageHandler = (chat: ChatData) => {
+        const messageHandler = async (chat: ChatData) => {
             setRecentMessage({
                 sender: chat.sender,
                 msgText: chat.msgText,
                 chatRoom: chat.chatRoom,
             });
-            if (chatList !== null) {
-                chatList.map(async (item: ChatList, index: number) => {
-                    const countresult = await api.getCountMessege(item.user_model_id, userid);
-                    chatList[index]["count"] = countresult.data.result;
-                });
-            }
 
-            setChatList((prev: any) => {
-                if (prev != null) {
-                    return prev!.map((item: any) => {
-                        if (item.user_model_id == chat.chatRoom) {
-                            item.lastmessage = chat.msgText;
-                            item.updatedAt = "방금 전";
-                            if (chat.sender == userid) {
-                                item.count = "0";
-                            }
-                            item.count = item.count;
+            //메세지를 보냈을때 채팅방 목록에 있는 count 값 0으로
+            setChatList((prev) => {
+                return prev!.map((item) => {
+                    if (item.user_model_id == chat.chatRoom) {
+                        item.lastmessage = chat.msgText;
+                        item.updatedAt = "방금 전";
+                        if (chat.sender == userid) {
+                            item.count = "0";
                         }
-                        return item;
-                    });
-                }
+                        item.count = item.count;
+                    }
+                    return item;
+                });
             });
         };
-
+        // 클라이언트단에서 소켓으로 때리는 함수
         socket.emit("room-list", String(user?.id), () => {}, []);
 
+        //소켓에서 클라이언트단으로 때리는 함수
         socket.on("leave-room", leaveRoomHandler);
         socket.on("message", messageHandler);
         socket.on("create-room", createRoomHandler);
         return () => {
-            socket.off("create-room", createRoomHandler);
             socket.off("leave-room", leaveRoomHandler);
             socket.off("message", messageHandler);
+            socket.off("create-room", createRoomHandler);
         };
     }, []);
 
+    //채팅방값 감시
     useEffect(() => {
-        // 챗방 목록이 바뀔떄 랜더링
-
         const messageHandler = (chat: ChatData) => {
-            console.log(45333333);
             setRecentMessage({
                 sender: chat.sender,
                 msgText: chat.msgText,
                 chatRoom: chat.chatRoom,
             });
 
-            setChatList((prev: any) => {
-                if (prev != null) {
-                    return prev!.map((item: any) => {
-                        if (item.user_model_id == chat.chatRoom) {
-                            item.lastmessage = chat.msgText;
-                            item.updatedAt = "방금 전";
-                            if (chat.sender == userid) {
-                                item.count = "0";
-                            } else {
-                                item.count = String(Number(item.count) + 0.5);
-                            }
+            setChatList((prev) => {
+                return prev!.map((item) => {
+                    if (item.user_model_id == chat.chatRoom) {
+                        item.lastmessage = chat.msgText;
+                        item.updatedAt = "방금 전";
+                        if (chat.sender == userid) {
+                            item.count = "0";
+                        } else {
+                            item.count = String(Number(item.count) + 1);
                         }
-                        return item;
-                    });
-                }
+                    }
+                    return item;
+                });
             });
-            // }
         };
         socket.on("message", messageHandler);
         return () => {
@@ -142,24 +137,21 @@ export function Chat() {
         };
     }, [chatList]);
 
-    const setCountZero = async (roomName: string) => {
-        if (joinedRoom) {
-            await api.readMessege(roomName, userid);
-        }
+    const setCountZero = (roomName: string) => {
         setChatList((prev) => {
             return prev!.map((item) => {
-                item.count = "0";
+                //배열의 방과 선택한 방의 값이 같을 경우 0으로 set
+                if (item.user_model_id == roomName) item.count = "0";
                 return item;
             });
         });
     };
-
     const onJoinRoom = useCallback(
         (roomName: string) => async () => {
             socket.emit("join-room", roomName, user?.id, () => {});
             socket.emit("leave-room", roomName, () => {});
-            await api.readMessege(roomName, userid);
             setCountZero(roomName);
+            await api.readMessege(roomName, userid);
             setCurrentsroom(roomName);
             setJoinedRoom(roomName);
             return () => {};
@@ -170,14 +162,13 @@ export function Chat() {
         if (chatList === null) {
             return null;
         }
-        console.log(chatList);
         return (
             <>
                 {chatList.map((item, idx) => (
                     <ChatRoomstyle onClick={onJoinRoom(item.user_model_id)} key={idx}>
                         <button>{item.lastmessage}</button>
                         <div>
-                            <div>{item.count}</div>
+                            {Number(item.count) == 0 ? "" : <div>{item.count}</div>}
                             <span> {item.updatedAt}</span>
                         </div>
                     </ChatRoomstyle>
@@ -202,13 +193,11 @@ export function Chat() {
             <FlexBox>
                 <span>
                     <Container>
-                        <>
-                            <Head>
-                                <div>채팅방 목록</div>
-                                <button onClick={onCreateRoom}>채팅방 생성</button>
-                            </Head>
-                            {chatList && ChatRoomComponents}
-                        </>
+                        <Head>
+                            <div>채팅방 목록</div>
+                            <button onClick={onCreateRoom}>채팅방 생성</button>
+                        </Head>
+                        {chatList && ChatRoomComponents}
                     </Container>
                 </span>
                 <Container>
@@ -216,7 +205,7 @@ export function Chat() {
                         <ChatRoom
                             joinedRoom={joinedRoom}
                             setJoinedRoom={setJoinedRoom}
-                            focusEvent={() => setCountZero(joinedRoom)}
+                            focusEvent={() => setCountZero(roomName!)}
                         />
                     )}
                 </Container>
