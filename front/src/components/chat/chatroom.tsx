@@ -88,6 +88,7 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     const onSendMessage = useCallback(
         (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            console.log(5656);
             if (!msgText) return alert("메시지를 입력해 주세요.");
             if (chatRoom != null) {
                 socket.emit("message", { chatRoom, msgText, userid }, (chat: ChatData) => {

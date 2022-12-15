@@ -39,14 +39,10 @@ function PostItem({ post }: Props, ref: ForwardedRef<HTMLElement>) {
         const roomName = inviter + "," + invitee;
         if (user_model_id === Number(user?.id)) {
             alert("자신이 작성한 일기입니다.");
-            // navigate("/diary", {
-            //     state: { room: roomName },
-            // });
             return;
         }
 
         socket.emit("create-room", inviter, invitee, messege, (response: CreateRoomResponse) => {
-            console.log(response, 4334);
             if (response.success) {
                 return alert(response.payload);
             }

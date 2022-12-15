@@ -112,7 +112,7 @@ class ChatService {
         let receiveris = members.filter((x) => {
             return x != userid;
         });
-
+        console.log(chatRoom, message, userid);
         const result = await this.prisma.chat.update({
             where: {
                 user_model_id: chatRoom,

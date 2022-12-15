@@ -118,19 +118,21 @@ export function Chat() {
                 chatRoom: chat.chatRoom,
             });
 
-            setChatList((prev) => {
-                return prev!.map((item) => {
-                    if (item.user_model_id == chat.chatRoom) {
-                        item.lastmessage = chat.msgText;
-                        item.updatedAt = "방금 전";
-                        if (chat.sender == userid) {
-                            item.count = "0";
-                        } else {
-                            item.count = String(Number(item.count) + 0.5);
+            setChatList((prev: any) => {
+                if (prev != null) {
+                    return prev!.map((item: any) => {
+                        if (item.user_model_id == chat.chatRoom) {
+                            item.lastmessage = chat.msgText;
+                            item.updatedAt = "방금 전";
+                            if (chat.sender == userid) {
+                                item.count = "0";
+                            } else {
+                                item.count = String(Number(item.count) + 0.5);
+                            }
                         }
-                    }
-                    return item;
-                });
+                        return item;
+                    });
+                }
             });
             // }
         };
