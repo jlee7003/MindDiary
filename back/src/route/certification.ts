@@ -1,8 +1,7 @@
 import { Router } from "express";
-import auth from "middleware/auth";
-import wrapRouter from "lib/wrapRouter";
-import certificationService from "services/certificationService";
-import AppError from "lib/AppError";
+import wrapRouter from "../lib/wrapRouter";
+import certificationService from "../services/certificationService";
+import AppError from "../lib/AppError";
 
 const certificationRouter = Router();
 
@@ -32,7 +31,6 @@ certificationRouter.post(
     // auth,
     wrapRouter(async (req, res) => {
         const { email, code } = req.body;
-        console.log(email, code, email || code);
         if (email === undefined || code === undefined) {
             throw new AppError("BodyDataError");
         }

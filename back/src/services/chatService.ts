@@ -31,7 +31,6 @@ class ChatService {
         });
         if (result !== null) {
             //이미 방이 있으므로 아무 것도 하지 않음
-            console.log("이미 존재하는 방임");
             return;
         } else {
             try {
@@ -53,7 +52,6 @@ class ChatService {
         await this.prisma.$disconnect();
         return { result: true };
     }
-
     async roomList(usermodel: number) {
         const result1 = await this.prisma.chat.findMany({
             where: {

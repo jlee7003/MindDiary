@@ -3,14 +3,13 @@ import useForm from "@/hooks/useForm";
 import { useRequestFindID } from "@/api/account";
 import { useRequestSendCode } from "@/api/certificate";
 import { FIND_PW, LOGIN, REGISTER } from "./constants/tabList";
-import Icon from "../UI/Icon";
+import Icon from "@/components/UI/Icon";
 import {
     Form,
     FormTitle,
     InputSection,
     InputBlock,
     FormButton,
-    Error,
     BottomSection,
     IDStyle,
     AuthButton,
@@ -19,25 +18,19 @@ import {
     Success,
     DescriptionLabel,
 } from "@/styles/common/modal/Form-style";
-
-interface Props {
-    setTabNumber(value: number): void;
-}
+import { useSetRecoilState } from "recoil";
+import { currentForm } from "@/temp/formAtom";
 
 interface IDResponse {
     data: string;
 }
 
-interface Error {
-    response: {
-        data: string;
-    };
-}
-
-export default function UserIDtoFind({ setTabNumber }: Props) {
+export default function UserIDtoFind() {
     const [id, setId] = useState("");
     const [emailError, setEmailError] = useState("");
     const [codeError, setCodeError] = useState("");
+
+    const setCurrentForm = useSetRecoilState(currentForm);
 
     const { form, changeHandler } = useForm({ email: "", target: "id", code: "" });
 
@@ -46,10 +39,10 @@ export default function UserIDtoFind({ setTabNumber }: Props) {
             console.log("이메일 코드 전송 완료.");
             setEmailError("");
         },
-        onError: (error: Error) => {
+        onError: (error) => {
             console.log("이메일 전송 실패");
 
-            if (error.response.data === "User does not exists") {
+            if (error.response?.data === "User does not exists") {
                 setEmailError("아이디가 존재하지 않습니다.");
                 return;
             }
@@ -129,14 +122,14 @@ export default function UserIDtoFind({ setTabNumber }: Props) {
                 </IDStyle>
             )}
             <BottomSection>
-                <FormButton onClick={() => setTabNumber(LOGIN)}>로그인 하기</FormButton>
+                <FormButton onClick={() => setCurrentForm(LOGIN)}>로그인 하기</FormButton>
                 <div className="register">
                     <span>계정이 없으신가요? </span>
-                    <button type="button" onClick={() => setTabNumber(REGISTER)}>
+                    <button type="button" onClick={() => setCurrentForm(REGISTER)}>
                         회원가입
                     </button>
                 </div>
-                <button type="button" onClick={() => setTabNumber(FIND_PW)}>
+                <button type="button" onClick={() => setCurrentForm(FIND_PW)}>
                     비밀번호 찾기
                 </button>
             </BottomSection>

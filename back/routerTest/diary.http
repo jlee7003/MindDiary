@@ -6,13 +6,13 @@ POST {{url}}/account/login
 Content-Type: application/json
 
 {
-    "userID": "test2",
-    "password": "0000"
+    "userID": "ttest",
+    "password": "ttest"
 }
 ###logout
 delete {{url}}/account
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdCIsImlhdCI6MTY2OTY5ODcwMywiZXhwIjoxNjY5NzAwNTAzfQ.jf1SjQfCkuJl_hQE1UrnURAtIlBhr-98cPKD3bjeV-c
-RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjY5Njk4NzAzLCJleHAiOjE2Njk3MDk1MDN9.dEvLKMxTrCc5C_dZTmFXdc7KTZGoukO7tzDozPBk6Jg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicnV5cmlhIiwiaWF0IjoxNjcwODI1NTEzLCJleHAiOjE2NzA4MjczMTN9.bF7IQhHtU1kx8-LawnSHIXitx71sJxNYqbsQ3a-HXLg
+RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwODI1NTE1LCJleHAiOjE2NzA4MzYzMTV9.CPLRfDOPsDt3r9dGmlCjlRBWEFrunR_n-YDIh2D5ATM
 Content-Type: application/json
 
 
@@ -26,42 +26,38 @@ Content-Type: application/json
 
 
 ###회원가입
-post {{url}}/account/new
+post {{url}}/users/new
 Content-Type: application/json
 
 {
-  "nickname":"test",
-  "email":"ehlee70013@gmail.com",
-  "userID": "test",
-  "password": "0000"
+  "userID": "euiho",
+  "password": "0000",
+  "email":"ehlee7003@gmail.com",
+  "nickname":"euiho",
+  "emailVerification":"0"
 }
+
 
 ##################################################################################
 
 
 
 ### 모든 일기 조회
-get {{url}}/diaries/all?count=10&page=1&emotion=&privatediary=
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdCIsImlhdCI6MTY3MDMzMzk3NCwiZXhwIjoxNjcwMzM1Nzc0fQ.1oKMuDqZ8_sMQTlUkDFhDM14Pf5Gbl4DTaMjbTyu4m0
-RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwMzMzOTc3LCJleHAiOjE2NzAzNDQ3Nzd9.pfD5YTbQ8fbwG_69ru_sUTi8k6NOV-j02HhDdZN7HxI
-Content-Type: application/json
-
-### 나의 일기 조회
-get {{url}}/diaries/mine?count=10&page=1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdCIsImlhdCI6MTY2OTk2MjkxMCwiZXhwIjoxNjY5OTY0NzEwfQ.EQwfC_4uErc76F0n4EhNogLnFSFGE8Zn0uGQF80YJXA
-RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjY5OTYyOTEwLCJleHAiOjE2Njk5NzM3MTB9.vPguf8_cwmnXnZeIahRq71ZmvxLTbX2UxmRg3soAkOE
+get {{url}}/diaries/all?count=10&page=1&emotion=전체&privatediary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdDExMSIsImlhdCI6MTY3MDQ3MDc1MywiZXhwIjoxNjcwNDcyNTUzfQ.zict85tshEbI7eefZIMmAPQU0ntw6p2e6Q_S8dtkTeQ
+RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwNDcwNzUzLCJleHAiOjE2NzA0ODE1NTN9.vwSCDDjajagqUEK3mrtxLgUJVtpPCjI-iTpG7_iCNNI
 Content-Type: application/json
 
 ### 일기 작성 api
 post {{url}}/diaries/write
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdDIiLCJpYXQiOjE2NzA0Njk3OTMsImV4cCI6MTY3MDQ3MTU5M30.HDJ0hb0-WHs2zv1m1Yaex6CCe6sL-mqCMnanPpWs3gU
-RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwNDY5Nzk2LCJleHAiOjE2NzA0ODA1OTZ9.mcaE3sX2eQjXk5qsUkmzo1RAE7mfZnkrDjcRxMJXREo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicnV5cmlhIiwiaWF0IjoxNjcwODMxNDYxLCJleHAiOjE2NzA4MzMyNjF9.tmcNLpMGtGV6WbYTw-VqAFShFqQC3DPlEoOV_ud9Sh8
+RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwODMxNDY0LCJleHAiOjE2NzA4NDIyNjR9.8zHxq-lhQAmXpuBWys20zOBKEUv5Q47mNK1BB9MpAMA
 Content-Type: application/json
 
 {
-  "title": "test3",
-  "description":"test is writing, allright",
-  "privateDiary": "true"
+  "title": "되나?",
+  "description":"ttteeee",
+  "privateDiary": true
 }
 
 ### 조회수 추가
@@ -75,10 +71,14 @@ Content-Type: application/json
 }
 
 ### 특정 일기 조회
-get {{url}}/diaries/?datetime=2022-12-31
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZXVpaG8iLCJpYXQiOjE2NjkxMDIzNTAsImV4cCI6MTY2OTEwNDE1MH0.ZQdV02n26JE3HV1K6SD5WAsye_EqCxEqwVAAou8n2rA
-RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjY5MTAyMzUwLCJleHAiOjE2NzAzMTE5NTB9._Tjm0OlQf7KLYH9r8CyKGOzSSwQXQWZdAulWTYVg-ps
-Content-Type: application/json
+get {{url}}/diaries/?datetime=2021-12-12
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicnV5cmlhIiwiaWF0IjoxNjcwODMzNjI2LCJleHAiOjE2NzA4MzU0MjZ9.4ZKDNnn5tBbJ5dBUAsvDLPR3S9VaRMGD82JjDffGETg
+RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwODMzNjI4LCJleHAiOjE2NzA4NDQ0Mjh9.4GNv13G65DlrK31DHV78PnxIT7ZLoEFGkY2pIJge9ls
+
+### 일주일 / 한달 / 일년 전 일기 조회
+get {{url}}/diaries/period/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidHRlc3QiLCJpYXQiOjE2NzA5MTg5ODAsImV4cCI6MTY3MDkyMDc4MH0.WjSgGcQj2rmogMkqaiB432uNez0kkPxuPCM-0PLsz1I
+RefreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiIiwiaWF0IjoxNjcwOTE4OTgyLCJleHAiOjE2NzA5Mjk3ODJ9.1Y7Oq2z6bhk80elqekoXNEnbnpLojcbxCmAiaCOX8vk
 
 
 ### 일기 수정

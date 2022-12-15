@@ -29,6 +29,7 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
     const user = useRecoilValue(currentUser);
     const userid = String(user?.id);
     const navigate = useNavigate();
+    //todo : usecallback 사용하기
 
     // 채팅이 길어지면(chats.length) 스크롤이 생성되므로, 스크롤의 위치를 최근 메시지에 위치시키기 위함
     useEffect(() => {
@@ -53,18 +54,13 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
                 setRecentlyMessage(chat);
             }
         };
-        const leaveRoomHandler = (chatRoom: string) => {
-            // setCurrentsroom(chatRoom);
-        };
 
         socket.on("message", messageHandler);
-        socket.on("leave-room", leaveRoomHandler);
         return () => {
             socket.off("message", messageHandler);
-            socket.off("leave-room", leaveRoomHandler);
         };
     }, []);
-
+    //유저가 입장하는 방에 따라 메세지 값을 불러오고 채팅 Input 값 비우기
     useEffect(() => {
         getMessegetext(chatRoom);
         setMsgText("");
@@ -102,14 +98,15 @@ export const ChatRoom = (joinedRoom: any | undefined) => {
 
     const onLeaveRoom = useCallback(() => {
         socket.emit("leave-room", chatRoom, () => {});
-        navigate("/");
+        navigate("/diary");
         joinedRoom.setJoinedRoom();
     }, [navigate, chatRoom]);
 
     return (
-        <div onClick={() => joinedRoom.focusEvent(joinedRoom.joinedRoom)}>
+        <div onFocus={() => joinedRoom.focusEvent()}>
             <LeaveButton onClick={onLeaveRoom}>
-                <button>방 나가기{chatRoom}</button>
+                <button>방 나가기</button>
+                {/* {chatRoom} */}
             </LeaveButton>
             <ChatContainer ref={chatContainerEl} onFocus={() => joinedRoom.focusEvent()}>
                 {chats.map((chat, index) =>

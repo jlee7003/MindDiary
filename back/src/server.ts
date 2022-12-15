@@ -1,18 +1,19 @@
 import express from "express";
 import { config } from "dotenv";
+import cors from "cors";
+import http from "http";
+import { Socket } from "socket.io";
+import socket from "socket.io";
+
 import userRouter from "./route/user";
 import accountRouter from "./route/account";
 import diaryRouter from "./route/diary";
 import chatRouter from "./route/chat";
 import certificationRouter from "./route/certification";
-import tokenRouter from "route/token";
-import error from "middleware/error";
-import http from "http";
-import { Socket } from "socket.io";
-import socket from "socket.io";
+import tokenRouter from "./route/token";
+import error from "./middleware/error";
 import chatService from "./services/chatService";
 
-import cors from "cors";
 config();
 
 const app = express();
@@ -43,8 +44,7 @@ export const sc = new socket.Server(server, {
         // origin: "http://127.0.0.1:3001",
         origin: "*",
         methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
-        credentials: true,
+        credentials: false,
     },
 });
 
@@ -110,7 +110,3 @@ if (sc !== undefined) {
 server.listen(3002, () => {
     console.log("chat server is loaded on " + 3002);
 });
-
-// app.listen(process.env.PORT, () => {
-//     console.log("server is loaded on " + process.env.PORT);
-// });
